@@ -1,0 +1,13 @@
+/bootstrap/compiled.php
+/vendor
+composer.phar
+composer.lock
+.env.*.php
+.env.php
+.DS_Store
+Thumbs.db
+
+.netbeans/nbproject/private/config.properties
+.netbeans/nbproject/private/private.properties
+.netbeans/nbproject/project.properties
+.netbeans/nbproject/project.xml
