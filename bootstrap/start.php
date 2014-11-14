@@ -59,6 +59,10 @@ $framework = $app['path.base'].
 
 require $framework.'/Illuminate/Foundation/start.php';
 
+// Set paths for frontend and backend views
+View::addNamespace('frontend', $app['path.base'].'/app/Tranquility/views/frontend');
+View::addNamespace('backend', $app['path.base'].'/app/Tranquility/views/backend');
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
