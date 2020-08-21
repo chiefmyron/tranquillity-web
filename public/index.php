@@ -1,49 +1,77 @@
 <?php
-/**
- * Laravel - A PHP Framework For Web Artisans
- *
- * @package  Laravel
- * @author   Taylor Otwell <taylorotwell@gmail.com>
- */
 
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader
-| for our application. We just need to utilize it! We'll require it
-| into the script here so that we do not have to worry about the
-| loading of any our classes "manually". Feels great to relax.
-|
-*/
+/*declare(strict_types=1);
 
-require __DIR__.'/../bootstrap/autoload.php';
+use DI\ContainerBuilder;
+use Slim\Factory\AppFactory;
+use Slim\Handlers\Strategies\RequestHandler;
 
-/*
-|--------------------------------------------------------------------------
-| Turn On The Lights
-|--------------------------------------------------------------------------
-|
-| We need to illuminate PHP development, so let's turn on the lights.
-| This bootstraps the framework and gets it ready for use, then it
-| will load up this application so that we can run it and send
-| the responses back to the browser and delight these users.
-|
-*/
+require __DIR__ . '/../vendor/autoload.php';
 
-$app = require_once __DIR__.'/../bootstrap/start.php';
+define('APP_ENV', $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'DEVELOPMENT');
+$settings = (require __DIR__ . '/../config/settings.php')(APP_ENV);
 
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can simply call the run method,
-| which will execute the request and send the response back to
-| the client's browser allowing them to enjoy the creative
-| and wonderful application we have whipped up for them.
-|
-*/
+// Set up dependencies
+$containerBuilder = new ContainerBuilder();
+if($settings['di_compilation_path']) {
+    $containerBuilder->enableCompilation($settings['di_compilation_path']);
+}
+(require __DIR__ . '/../config/dependencies.php')($containerBuilder, $settings);
 
+// Create app
+AppFactory::setContainer($containerBuilder->build());
+$app = AppFactory::create();
+
+// Assign matched route arguments to Request attributes for PSR-15 handlers
+$app->getRouteCollector()->setDefaultInvocationStrategy(new RequestHandler(true));
+
+// Register middleware
+(require __DIR__ . '/../config/middleware.php')($app);
+
+// Register routes
+(require __DIR__ . '/../config/routes.php')($app);
+
+// Run app
+$app->run();*/
+
+
+declare(strict_types=1);
+
+use DI\ContainerBuilder;
+use Slim\Factory\AppFactory;
+use Slim\Handlers\Strategies\RequestHandler;
+
+// Initialise the autoloader
+define('TRANQUIL_PATH_BASE', realpath(__DIR__.'/../'));
+require TRANQUIL_PATH_BASE.'/vendor/autoload.php';
+
+// Load configuration
+$configLoader = require(TRANQUIL_PATH_BASE.'/src/application/config.php');
+$config = $configLoader();
+
+// Set up dependencies
+$containerBuilder = new ContainerBuilder();
+if ($config->has('app.di_compliation_path')) {
+    $containerBuilder->enableCompilation($config->get('app.di_compilation_path'));
+}
+$dependencyLoader = require(TRANQUIL_PATH_BASE.'/src/application/dependencies.php');
+$dependencyLoader($containerBuilder, $config);
+
+// Create app
+AppFactory::setContainer($containerBuilder->build());
+$app = AppFactory::create();
+
+// Assign matched route arguments to Request attributes for PSR-15 handlers
+$app->getRouteCollector()->setDefaultInvocationStrategy(new RequestHandler(true));
+
+// Register middleware
+$middlewareLoader = require(TRANQUIL_PATH_BASE.'/src/application/middleware.php');
+$middlewareLoader($app);
+
+// Register routes
+//$routeLoader = require(TRANQUIL_PATH_BASE.'/src/application/routes.php');
+$routeLoader = require(TRANQUIL_PATH_BASE.'/config/routes.php');
+$routeLoader($app);
+
+// Run app
 $app->run();
