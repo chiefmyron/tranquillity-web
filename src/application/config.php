@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
+// Library classes
 use Dotenv\Dotenv;
-use Tranquility\App\Config;
+
+// Framework classes
+use Tranquillity\App\Config;
 
 return static function() {
     // Initialise environment variables

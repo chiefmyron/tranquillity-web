@@ -1,12 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 // Library classes
 use DI\ContainerBuilder;
 
 // Application classes
-use Tranquility\App\Config;
+use Tranquillity\App\Config;
 
 return static function (ContainerBuilder $containerBuilder, Config $config) {
     // Add configuration to container

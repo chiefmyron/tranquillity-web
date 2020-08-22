@@ -1,7 +1,8 @@
-<?php namespace Tranquility\App;
+<?php declare(strict_types=1);
+namespace Tranquillity\App;
 
-use \Tranquility\Support\ArrayHelper as Arr;
-use \Symfony\Component\Finder\Finder as Finder;
+use Tranquillity\Support\ArrayHelper as Arr;
+use Symfony\Component\Finder\Finder;
 
 class Config implements \ArrayAccess {
     /**

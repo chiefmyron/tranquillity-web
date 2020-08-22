@@ -1,14 +1,13 @@
 {
-    "name": "tranquility/tranquility-web",
-    "description": "Tranquility Web Client",
+    "name": "tranquillity/tranquillity-web",
+    "description": "Tranquillity Web Client",
     "config": {
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src",
-            "Tranquility\\": "src/classes/"
+            "Tranquillity\\": "src/classes/"
         },
         "files": [
             "src/application/helpers.php"
@@ -19,8 +18,8 @@
         "php-di/php-di": "^6.0",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.2",
+        "slim/twig-view": "^3.1",
         "symfony/finder": "^5.1",
-        "twig/twig": "^3.0",
         "vlucas/phpdotenv": "^5.1"
     }
     ,

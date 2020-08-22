@@ -1,8 +1,8 @@
-<?php namespace Tranquility\Support;
+<?php declare(strict_types=1);
+namespace Tranquillity\Support;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Tranquility\System\Utility;
 
 class ArrayHelper {
 

@@ -1,4 +1,5 @@
-<?php namespace Tranquility\ServiceProviders;
+<?php declare(strict_types=1);
+namespace Tranquillity\ServiceProviders;
 
 // Library classes
 use DI\ContainerBuilder;

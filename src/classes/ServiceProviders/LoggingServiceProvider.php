@@ -1,4 +1,5 @@
-<?php namespace Tranquility\ServiceProviders;
+<?php declare(strict_types=1);
+namespace Tranquillity\ServiceProviders;
 
 // PSR standards interfaces
 use Psr\Log\LoggerInterface;
