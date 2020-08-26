@@ -1,0 +1,21 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}Tranquility - Login{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <p>Welcome to Tranquility. Please enter your email address and password to get started.</p>
+
+    <fieldset>
+        {{ form_start(loginForm) }}
+            {{ form_widget(loginForm) }}
+
+            <button type="submit" class="btn btn-primary form-control">Login</button>
+
+            <div class="form-group">
+                <hr />
+                <a href="{{ path('auth_forgot_password') }}">Forgotten your password?</a>
+            </div>
+        {{ form_end(loginForm) }}
+    </fieldset>
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <title>{% block title %}Tranquility{% endblock %}</title>
+	    {% block head_meta %}
+        <meta charset="utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+	    <meta http-equiv="Pragma" content="no-cache" />
+	    <meta http-equiv="Expires" content="-1" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        {% endblock %}
+	
+        {% block head_stylesheets %}
+        <!-- Linked fonts and icons -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.3/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        
+        <!-- Custom styles -->
+        <link href="{{ asset('css/layout.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('css/login.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('css/colours/blue.css') }}" rel="stylesheet" type="text/css" />
+        {% endblock %}
+	
+	    <!-- IE8 support -->
+	    <!--[if lt IE9]>
+	        <script src="https://oss.maxcdn.com/html5shiv/3.7.2./html5shiv.min.js"></script>
+	        <script src="https://oss/maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+	</head>
+	
+	<body>
+	    <div id="branding-container"></div>
+	    <div class="login-panel">
+	        {% block content %} {% endblock %}
+	    </div>
+	
+	    <!-- Add JavaScript at the bottom to prevent page load blocking -->
+        {% block js %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        {% endblock %}
+	</body>
+</html>
