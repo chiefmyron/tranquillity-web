@@ -1,39 +1,30 @@
-<?php declare(strict_types=1);
+<?php
 
-use DI\ContainerBuilder;
-use Slim\Factory\AppFactory;
-use Slim\Handlers\Strategies\RequestHandler;
+use App\Kernel;
+use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\ErrorHandler\Debug;
+use Symfony\Component\HttpFoundation\Request;
 
-// Initialise the autoloader
-define('TRANQUIL_PATH_BASE', realpath(__DIR__.'/../'));
-require TRANQUIL_PATH_BASE.'/vendor/autoload.php';
+require dirname(__DIR__).'/vendor/autoload.php';
 
-// Load configuration
-$configLoader = require(TRANQUIL_PATH_BASE.'/src/application/config.php');
-$config = $configLoader();
+(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 
-// Set up dependencies
-$containerBuilder = new ContainerBuilder();
-if ($config->has('app.di_compliation_path')) {
-    $containerBuilder->enableCompilation($config->get('app.di_compilation_path'));
+if ($_SERVER['APP_DEBUG']) {
+    umask(0000);
+
+    Debug::enable();
 }
-$dependencyLoader = require(TRANQUIL_PATH_BASE.'/src/application/dependencies.php');
-$dependencyLoader($containerBuilder, $config);
 
-// Create app
-AppFactory::setContainer($containerBuilder->build());
-$app = AppFactory::create();
+if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? false) {
+    Request::setTrustedProxies(explode(',', $trustedProxies), Request::HEADER_X_FORWARDED_ALL ^ Request::HEADER_X_FORWARDED_HOST);
+}
 
-// Assign matched route arguments to Request attributes for PSR-15 handlers
-$app->getRouteCollector()->setDefaultInvocationStrategy(new RequestHandler(true));
+if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
+    Request::setTrustedHosts([$trustedHosts]);
+}
 
-// Register middleware
-$middlewareLoader = require(TRANQUIL_PATH_BASE.'/src/application/middleware.php');
-$middlewareLoader($app);
-
-// Register routes
-$routeLoader = require(TRANQUIL_PATH_BASE.'/src/application/routes.php');
-$routeLoader($app);
-
-// Run app
-$app->run();
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);
