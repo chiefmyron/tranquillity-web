@@ -1,30 +1,40 @@
-<?php
+<?php declare(strict_types=1);
 
-use App\Kernel;
-use Symfony\Component\Dotenv\Dotenv;
-use Symfony\Component\ErrorHandler\Debug;
-use Symfony\Component\HttpFoundation\Request;
+// Import framework dependencies
+use DI\ContainerBuilder;
+use Slim\Factory\AppFactory;
+use Slim\Handlers\Strategies\RequestResponse;
 
-require dirname(__DIR__).'/vendor/autoload.php';
+// Initialise the autoloader
+define('APP_BASE_PATH', realpath(__DIR__.'/../'));
+require(APP_BASE_PATH.'/vendor/autoload.php');
 
-(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+// Load application configuration
+$configLoader = require(APP_BASE_PATH.'/config/config.php');
+$config = $configLoader();
 
-if ($_SERVER['APP_DEBUG']) {
-    umask(0000);
-
-    Debug::enable();
+// Set up dependencies
+$containerBuilder = new ContainerBuilder();
+if ($config->has('app.di_compliation_path')) {
+    $containerBuilder->enableCompilation($config->get('app.di_compilation_path'));
 }
+$dependencyLoader = require(APP_BASE_PATH.'/config/dependencies.php');
+$dependencyLoader($containerBuilder, $config);
 
-if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? false) {
-    Request::setTrustedProxies(explode(',', $trustedProxies), Request::HEADER_X_FORWARDED_ALL ^ Request::HEADER_X_FORWARDED_HOST);
-}
+// Initialise application
+AppFactory::setContainer($containerBuilder->build());
+$app = AppFactory::create();
 
-if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
-    Request::setTrustedHosts([$trustedHosts]);
-}
+// Assign matched route arguments to Request attributes for PSR-15 handlers
+$app->getRouteCollector()->setDefaultInvocationStrategy(new RequestResponse(true));
 
-$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
-$response->send();
-$kernel->terminate($request, $response);
+// Register middleware
+$middlewareLoader = require(APP_BASE_PATH.'/config/middleware.php');
+$middlewareLoader($app);
+
+// Register routes
+$routeLoader = require(APP_BASE_PATH.'/config/routes.php');
+$routeLoader($app);
+
+// Run app
+$app->run();

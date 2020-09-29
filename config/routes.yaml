@@ -1,6 +1,0 @@
-auth_login:
-    path: /
-    controller: App\Controller\AuthController::login
-auth_forgot_password:
-    path: /auth/forgot-password
-    controller: App\Controller\AuthController::passwordReset
