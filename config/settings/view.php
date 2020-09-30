@@ -24,7 +24,8 @@ return [
         // * db_connection_options: An array of driver-specific connection options [default: []]
         // * lock_mode: The strategy for locking, see constants [default: LOCK_TRANSACTIONAL]
 
-        // Character encoding
-        'charset' => env('VIEW_CHARSET', 'utf-8')
+        'debug' => env('APP_DEV_MODE', false),
+        'charset' => env('VIEW_CHARSET', 'utf-8'),
+        'auto_reload' => true
     ]
 ];

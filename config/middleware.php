@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
+use Tranquillity\Middleware\TranslationMiddleware;
 
 return static function (App $app) {
     // Get logger from container
@@ -16,5 +17,6 @@ return static function (App $app) {
     $app->addBodyParsingMiddleware();
     $app->addRoutingMiddleware();
     $app->add(TwigMiddleware::createFromContainer($app, Twig::class));
+    $app->add(TranslationMiddleware::class);
     $app->addErrorMiddleware(true, true, true, $logger);
 };

@@ -6,11 +6,11 @@ use Psr\Container\ContainerInterface;
 // Library classes
 use DI\ContainerBuilder;
 use Slim\Views\Twig;
+use Twig\TwigFunction;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 // Application classes
 use Tranquillity\Utility\ArrayHelper;
-use Twig\TwigFunction;
 
 class ViewServiceProvider extends AbstractServiceProvider {
     /**

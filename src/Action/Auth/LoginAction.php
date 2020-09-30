@@ -7,9 +7,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 // Application classes
 use Tranquillity\Action\AbstractAction;
+use Tranquillity\Domain\Form\Auth\LoginForm;
 
 final class LoginAction extends AbstractAction {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface {
-        return $this->responder->render($response, '/auth/login.html.twig');
+        return $this->responder->render($response, '/pages/auth/login.html.twig');
     }
 }
