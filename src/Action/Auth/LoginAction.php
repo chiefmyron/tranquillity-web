@@ -11,6 +11,15 @@ use Tranquillity\Domain\Form\Auth\LoginForm;
 
 final class LoginAction extends AbstractAction {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface {
-        return $this->responder->render($response, '/pages/auth/login.html.twig');
+        $form = $this->createForm(LoginForm::class);
+
+        $form->handleRequest();
+        if ($form->isSubmitted() && $form->isValid()) {
+            var_dump($form->getData());die();
+        }
+
+        return $this->responder->render($response, '/pages/auth/login.html.twig', [
+            'login_form' => $form->createView()
+        ]);
     }
 }

@@ -6,9 +6,11 @@ use Psr\Container\ContainerInterface;
 // Library classes
 use DI\ContainerBuilder;
 use Slim\Views\Twig;
+use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Form\FormFactoryBuilderInterface;
 use Symfony\Component\Form\FormRenderer;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
@@ -31,6 +33,9 @@ class FormServiceProvider extends AbstractServiceProvider {
             FormFactoryBuilderInterface::class => function(ContainerInterface $c) {
                 $config = $c->get('config')->get('form');
 
+                // Get CSRF token manager
+                $csrfTokenManager = $c->get(CsrfTokenManager::class);
+
                 // Get Twig rendering environment
                 $view = $c->get(Twig::class);
                 $environment = $view->getEnvironment();
@@ -45,6 +50,7 @@ class FormServiceProvider extends AbstractServiceProvider {
                 $environment->addFunction(new TwigFunction('form', null, ['node_class' => RenderBlockNode::class, 'is_safe' => ['html']]));
                 $environment->addFunction(new TwigFunction('form_start', null, ['node_class' => RenderBlockNode::class, 'is_safe' => ['html']]));
                 $environment->addFunction(new TwigFunction('form_end', null, ['node_class' => RenderBlockNode::class, 'is_safe' => ['html']]));
+                $environment->addFunction(new TwigFunction('csrf_token', [FormRenderer::class, 'renderCsrfToken']));
 
                 // Add form-related filtering functions to the environment
                 $environment->addFilter(new TwigFilter('humanize', [FormRenderer::class, 'humanize']));
@@ -55,15 +61,16 @@ class FormServiceProvider extends AbstractServiceProvider {
                 $environment->addTest(new TwigTest('selectedchoice', SelectedChoiceTestExpression::class.'::test'));
 
                 // Add form renderer to Twig
-                $formRenderer = new FormRendererEngine(['/controls/forms.html.twig'], $environment);
+                $formRenderer = new FormRendererEngine([$config['template_path']], $environment);
                 $view->addRuntimeLoader(new FactoryRuntimeLoader([
-                    FormRenderer::class => function () use ($formRenderer) {
-                        return new FormRenderer($formRenderer);
+                    FormRenderer::class => function () use ($formRenderer, $csrfTokenManager) {
+                        return new FormRenderer($formRenderer, $csrfTokenManager);
                     }
                 ]));
 
                 // Create the form factory
                 $formFactory = Forms::createFormFactoryBuilder();
+                $formFactory->addExtension(new CsrfExtension($csrfTokenManager));
                 return $formFactory;
             }
         ]);
