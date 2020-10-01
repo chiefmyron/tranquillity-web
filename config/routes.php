@@ -14,4 +14,9 @@ use Tranquillity\Action\Auth\LoginAction;
 return function (App $app) {
     $app->get('/', LoginAction::class)->setName('auth_login');
     $app->post('/', LoginAction::class);
+
+    // Support for CORS pre-flight requests
+    $app->options('/{routes:.+}', function($request, $response, $args) {
+        return $response;
+    });
 };
