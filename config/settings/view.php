@@ -8,7 +8,7 @@ return [
 
     // Cache
     'cache_enabled' => env('VIEW_CACHE_ENABLED', true),
-    'cache_path' => env('VIEW_CACHE_PATH', APP_BASE_PATH.'/var/cache'),
+    'cache_path' => env('VIEW_CACHE_PATH', APP_BASE_PATH.'/var/cache/views'),
 
     // Additional Twig parameters
     // @see https://symfony.com/doc/current/reference/configuration/twig.html

@@ -24,8 +24,6 @@ return [
     // Fallback locale
     'locale_fallback' => 'en',
 
-    // Cache path
-
     // Dependency injection compliation path
-    'di_compilation_path' => env('APP_DI_COMPLILE_PATH', APP_BASE_PATH.'/var/cache')
+    'di_compilation_path' => env('APP_DI_COMPLILE_PATH', APP_BASE_PATH.'/var/cache/container')
 ];
