@@ -5,6 +5,7 @@ use DI\ContainerBuilder;
 
 // Application classes
 use Tranquillity\Config\Config;
+use Tranquillity\ServiceProvider\DatabaseServiceProvider;
 use Tranquillity\ServiceProvider\FormServiceProvider;
 use Tranquillity\ServiceProvider\LoggerServiceProvider;
 use Tranquillity\ServiceProvider\ProfilerServiceProvider;
@@ -19,6 +20,7 @@ return static function (ContainerBuilder $containerBuilder, Config $config) {
     $serviceProviders = [
         LoggerServiceProvider::class,
         ProfilerServiceProvider::class,
+        DatabaseServiceProvider::class,
         ViewServiceProvider::class,
         TranslationServiceProvider::class,
         FormServiceProvider::class

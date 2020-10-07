@@ -6,12 +6,14 @@ use Psr\Log\LoggerInterface;
 
 // Library classes
 use DI\ContainerBuilder;
+use Doctrine\DBAL\Connection;
 use Slim\Views\Twig;
 use Twig\Extension\ProfilerExtension;
 use Twig\Profiler\Profile;
 
 // Application classes
 use Tranquillity\Utility\ArrayHelper;
+use Tranquillity\Utility\Profiler\DataCollector\DatabaseDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\EnvironmentDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\HttpDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\MemoryDataCollector;
@@ -60,6 +62,10 @@ class ProfilerServiceProvider extends AbstractServiceProvider {
                 $viewProfile = new Profile();
                 $view->addExtension(new ProfilerExtension($viewProfile));
                 $profiler->addDataCollector(new ViewDataCollector($viewProfile, $view->getEnvironment()));
+
+                // Add data collector for database connection
+                $connection = $c->get(Connection::class);
+                $profiler->addDataCollector(new DatabaseDataCollector($connection));
 
                 // Return the profiler engine
                 return $profiler;
