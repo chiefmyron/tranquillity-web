@@ -5,13 +5,21 @@ namespace Tranquillity\Utility\Profiler\DataCollector;
 use Throwable;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class HttpDataCollector extends AbstractDataCollector implements LateDataCollectorInterface {
     
     /**
+     * @var Session
+     */
+    private $session;
+
+    /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct(Session $session) {
+        $this->session = $session;
+
         $this->reset();
     }
     
@@ -26,6 +34,7 @@ class HttpDataCollector extends AbstractDataCollector implements LateDataCollect
      * {@inheritDoc}
      */
     public function collect(ServerRequestInterface $request, ResponseInterface $response, ?Throwable $exception = null) {
+        // Set request and response details
         $this->data = [
             'request_method' => $request->getMethod(),
             'request_body' => $request->getParsedBody(),
@@ -41,6 +50,14 @@ class HttpDataCollector extends AbstractDataCollector implements LateDataCollect
             'response_status_text' => $response->getReasonPhrase(),
             'response_headers' => $response->getHeaders()
         ];
+
+        // Add session details if it has started
+        if ($this->session->isStarted() === true) {
+            $this->data['session_created'] = date(DATE_RFC3339, $this->session->getMetadataBag()->getCreated());
+            $this->data['session_last_used'] = date(DATE_RFC3339, $this->session->getMetadataBag()->getLastUsed());
+            $this->data['session_lifetime'] = $this->session->getMetadataBag()->getLifetime();
+            $this->data['session_attributes'] = $this->session->all();
+        }
     }
 
     /**

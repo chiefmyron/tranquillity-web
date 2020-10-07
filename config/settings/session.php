@@ -21,6 +21,7 @@ return [
         // * save_path: Path of directory to save session files [default: '' (will use PHP default path)]
 
         // PDO options
+        // * db_dsn: The DSN connection string for the database [default: '' - will attempt to use the common database connection, if available]
         // * db_table: The name of the table [default: sessions]
         // * db_id_col: The column where to store the session id [default: sess_id]
         // * db_data_col: The column where to store the session data [default: sess_data]
@@ -30,7 +31,11 @@ return [
         // * db_password: The password when lazy-connect [default: '']
         // * db_connection_options: An array of driver-specific connection options [default: []]
         // * lock_mode: The strategy for locking, see constants [default: LOCK_TRANSACTIONAL]
-        'db_table' => env('SESSION_STORAGE_DB_TABLE_NAME', 'sessions')
+        'db_table' => env('SESSION_STORAGE_DB_TABLE_NAME', 'session'),
+        'db_id_col' => env('SESSION_STORAGE_DB_TABLE_COLUMN_ID', 'sessionId'),
+        'db_data_col' => env('SESSION_STORAGE_DB_TABLE_COLUMN_DATA', 'data'),
+        'db_lifetime_col'=> env('SESSION_STORAGE_DB_TABLE_COLUMN_LIFETIME', 'lifetime'),
+        'db_time_col' => env('SESSION_STORAGE_DB_TABLE_COLUMN_TIMESTAMP', 'timestamp')
 
         // Redis options
         // * prefix: The prefix to use for the keys in order to avoid collision on the Redis server

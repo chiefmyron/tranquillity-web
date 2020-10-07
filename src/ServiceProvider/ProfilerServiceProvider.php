@@ -8,11 +8,14 @@ use Psr\Log\LoggerInterface;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Connection;
 use Slim\Views\Twig;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Twig\Extension\ProfilerExtension;
 use Twig\Profiler\Profile;
 
 // Application classes
 use Tranquillity\Utility\ArrayHelper;
+use Tranquillity\Utility\Profiler\Profiler;
+use Tranquillity\Utility\Profiler\Storage\FileProfilerStorage;
 use Tranquillity\Utility\Profiler\DataCollector\DatabaseDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\EnvironmentDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\HttpDataCollector;
@@ -20,8 +23,6 @@ use Tranquillity\Utility\Profiler\DataCollector\MemoryDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\RouterDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\SettingsDataCollector;
 use Tranquillity\Utility\Profiler\DataCollector\ViewDataCollector;
-use Tranquillity\Utility\Profiler\Profiler;
-use Tranquillity\Utility\Profiler\Storage\FileProfilerStorage;
 
 class ProfilerServiceProvider extends AbstractServiceProvider {
     /**
@@ -53,7 +54,7 @@ class ProfilerServiceProvider extends AbstractServiceProvider {
                 // Add default data collectors
                 $profiler->addDataCollector(new EnvironmentDataCollector());
                 $profiler->addDataCollector(new MemoryDataCollector());
-                $profiler->addDataCollector(new HttpDataCollector());
+                $profiler->addDataCollector(new HttpDataCollector($c->get(Session::class)));
                 $profiler->addDataCollector(new RouterDataCollector());
                 $profiler->addDataCollector(new SettingsDataCollector($config));
 

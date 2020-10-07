@@ -9,6 +9,7 @@ use Tranquillity\ServiceProvider\DatabaseServiceProvider;
 use Tranquillity\ServiceProvider\FormServiceProvider;
 use Tranquillity\ServiceProvider\LoggerServiceProvider;
 use Tranquillity\ServiceProvider\ProfilerServiceProvider;
+use Tranquillity\ServiceProvider\SessionServiceProvider;
 use Tranquillity\ServiceProvider\TranslationServiceProvider;
 use Tranquillity\ServiceProvider\ViewServiceProvider;
 
@@ -21,6 +22,7 @@ return static function (ContainerBuilder $containerBuilder, Config $config) {
         LoggerServiceProvider::class,
         ProfilerServiceProvider::class,
         DatabaseServiceProvider::class,
+        SessionServiceProvider::class,
         ViewServiceProvider::class,
         TranslationServiceProvider::class,
         FormServiceProvider::class

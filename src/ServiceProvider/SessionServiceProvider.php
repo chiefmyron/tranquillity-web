@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 
 // Library classes
 use DI\ContainerBuilder;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -17,17 +18,9 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
 
 // Application classes
 use Tranquillity\Utility\ArrayHelper;
+use Tranquillity\Exception\NotImplementedException;
 
 class SessionServiceProvider extends AbstractServiceProvider {
-    // Valid session storage handlers
-    private $storageHandlers = [
-        'native' => NativeFileSessionHandler::class, 
-        'pdo' => PdoSessionHandler::class, 
-        'redis' => RedisSessionHandler::class, 
-        'memcached' => MemcachedSessionHandler::class, 
-        'mongodb' => MongoDbSessionHandler::class
-    ];
-
     /**
      * @inheritDoc
      */
@@ -36,6 +29,8 @@ class SessionServiceProvider extends AbstractServiceProvider {
             // Register session library
             Session::class => function(ContainerInterface $c) {
                 $config = $c->get('config')->get('session');
+                $options = ArrayHelper::get($config, 'options', []);
+                $storageOptions = ArrayHelper::get($config, 'storage_options', []);
 
                 // If being called from the command line, session is not required
                 if (PHP_SAPI === 'cli') {
@@ -43,12 +38,30 @@ class SessionServiceProvider extends AbstractServiceProvider {
                 }
 
                 // Get storage handler
-                $storageHandlerType = strtolower($config['storage_type']);
-                $storageHandlerClassname = ArrayHelper::get($this->storageHandlers, $storageHandlerType, NativeFileSessionHandler::class);
-                $storageHandler = new $storageHandlerClassname($config['storage_options']);
+                $storageHandler = null;
+                switch(strtolower($config['storage_type'])) {
+                    case 'native':
+                        $savePath = ArrayHelper::get($storageOptions, 'save_path', '');
+                        $storageHandler = new NativeFileSessionHandler($savePath);
+                        break;
+                    case 'pdo':
+                        $dsn = ArrayHelper::get($storageOptions, 'db_dsn', '');
+                        if ($dsn === '') {
+                            $connection = $c->get(Connection::class);
+                            $dsn = $connection->getWrappedConnection();
+                        }
+                        $storageHandler = new PdoSessionHandler($dsn, $storageOptions);
+                        break;
+                    case 'redis':
+                    case 'memcached':
+                    case 'mongodb':
+                    default:
+                        throw new NotImplementedException('Session storage handler for "'.$config['storage_type'].'" has not yet been implemented.');
+                        break;
+                }
 
                 // Use native PHP session storage wrapper and create session
-                $session = new Session(new NativeSessionStorage($config['options'], $storageHandler));
+                $session = new Session(new NativeSessionStorage($options, $storageHandler));
                 return $session;
             },
 
