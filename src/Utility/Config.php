@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace Tranquillity\Config;
+namespace Tranquillity\Utility;
 
 use Tranquillity\Utility\ArrayHelper;
 use Tranquillity\Exception\FileNotFoundException;

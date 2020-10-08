@@ -4,7 +4,7 @@
 use DI\ContainerBuilder;
 
 // Application classes
-use Tranquillity\Config\Config;
+use Tranquillity\Utility\Config;
 use Tranquillity\ServiceProvider\DatabaseServiceProvider;
 use Tranquillity\ServiceProvider\FormServiceProvider;
 use Tranquillity\ServiceProvider\LoggerServiceProvider;

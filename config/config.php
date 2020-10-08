@@ -4,7 +4,7 @@
 use Symfony\Component\Dotenv\Dotenv;
 
 // Application classes
-use Tranquillity\Config\Config;
+use Tranquillity\Utility\Config;
 
 return static function() {
     // Initialise environment variables

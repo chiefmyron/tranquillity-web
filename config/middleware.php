@@ -7,11 +7,12 @@ use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
-use Tranquillity\Middleware\ProfilerMiddleware;
+
 // Application classes
-use Tranquillity\Middleware\TranslationMiddleware;
+use Tranquillity\Middleware\ProfilerMiddleware;
 use Tranquillity\Middleware\SecurityCorsMiddleware;
 use Tranquillity\Middleware\SecurityIpAddressMiddleware;
+use Tranquillity\Middleware\TranslationMiddleware;
 
 return static function (App $app) {
     // Get logger from container

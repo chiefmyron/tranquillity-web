@@ -4,7 +4,7 @@
             "Tranquillity\\": "src/"
         },
         "files": [
-            "src/_helpers/environment.php"
+            "src/_scripts/environment.php"
         ]
     },
     "require": {
